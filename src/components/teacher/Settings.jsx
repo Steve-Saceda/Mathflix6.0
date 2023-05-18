@@ -28,7 +28,7 @@ export default function Settings(){
             });
         }
     };
-    
+    Axios.defaults.withCredentials = true;
     return(<>
         <UserNavbar />
         <div className="settings-container">

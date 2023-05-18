@@ -85,7 +85,7 @@ export default function Profile(){
         });
     },[])
 
-
+    Axios.defaults.withCredentials = true;
 
     return (
         <>
