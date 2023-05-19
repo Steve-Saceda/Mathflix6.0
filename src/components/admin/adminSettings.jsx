@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Axios from "axios";
 import AdminNav from "./adminNav";
 import "../../css/teacher/settings.css";
@@ -9,13 +9,22 @@ export default function Settings(){
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
+    const [userId, setUserId] = useState();
+
+    useEffect(() => {
+        Axios.get("https://mathflix.herokuapp.com/api/getUserId").then((response) => {
+                setUserId(response.data.user[0].id);
+                console.log("user id: ", userId);
+          });
+    }, [userId])
+
     const createNewPassword = () => {
         if (password === "" || confirmPassword === "") {
           alert("Please enter a password and confirm it.");
         } else if (password !== confirmPassword) {
           alert("Make sure password is equal to confirm password");
         } else {
-          Axios.put("https://mathflix.herokuapp.com/api/settingsResetPassword", { password: password })
+          Axios.put("https://mathflix.herokuapp.com/api/settingsResetPassword", { password: password, userId:userId })
             .then((response) => {
               if (!response.data.err) {
                 alert("Password successfully updated.");

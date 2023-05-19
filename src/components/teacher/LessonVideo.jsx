@@ -41,13 +41,25 @@ export default function LessonVideo(){
 
     const [queryCount, setQueryCount] = useState(0);
     const MAX_QUERIES = 10
+
+    const [userId, setUserId] = useState();
     
+    useEffect(() => {
+        Axios.get("https://mathflix.herokuapp.com/api/getUserId"
+        ).then((response) => {
+            setUserId(response.data.user[0].id);
+        }).catch((error) => {
+            console.log(error);
+        })
+    }, [])
+
     //rate or comment chapter
     const userComment = () => {
         Axios.post("https://mathflix.herokuapp.com/api/user/rateChapter", {
             chapter_id: location.state.chapterId,
             comment : reaction,
-            rating : value
+            rating : value,
+            userId : userId
           }).then((response) => {
             if (response) {
                 alert("Comment Inserted Succesfully");
@@ -152,6 +164,8 @@ export default function LessonVideo(){
                 month = {data.month}
                 day = {data.day}
                 year = {data.year}
+
+                userId = {userId}
             />
         );
     }
@@ -179,7 +193,7 @@ export default function LessonVideo(){
             pathname: "/user/chapter/watch/answerQuiz",
             search: `?${createSearchParams({chapterId})}`, // inject code value into template
           },{state: {
-                    chapterId : chapterId, 
+                    chapterId : chapterId, userId:userId
         }});
     }
 

@@ -24,7 +24,7 @@ export default function Navbar() {
         navigate({
           pathname: "/user",
           search: `?${createSearchParams({kindofuser})}`, // inject code value into template
-        },{state: {kindofuser : response.data.user[0].kindofuser}});
+        },{state: {kindofuser : response.data.user[0].kindofuser, userId : response.data.user[0].id}});
       }
     });
   }, [kindofuser, navigate]);

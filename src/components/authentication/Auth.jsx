@@ -40,6 +40,7 @@ export default function Auth() {
       password:password
     }).then((response) => {
       if (response.data.message) {
+        setLoginStatus("User Not Found");
         //console.log(response) 
       } else {
         //console.log(response);
@@ -62,7 +63,7 @@ export default function Auth() {
             navigate({
               pathname: "/user",
               search: `?${createSearchParams({kindofuser})}`, // inject code value into template
-            },{state: {kindofuser : response.data.user[0].kindofuser}});
+            },{state: {kindofuser : response.data.user[0].kindofuser, userId : response.data.user[0].id}});
           }
         }
       });

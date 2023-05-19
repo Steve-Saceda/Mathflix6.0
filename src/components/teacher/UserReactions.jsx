@@ -31,19 +31,23 @@ export default function UserReactions(props){
 
     const deleteComment = () => {
         const result = window.confirm('Do you want to continue?');
-        if (result) {
-            setAnchorEl(null);
-            Axios.delete("https://mathflix.herokuapp.com/api/user/deleteComment", {
-              params: {
-                ratingId : props.id,
-                user_id : props.user_id
-              }
-            }).then((response) => {
-                alert(response.data.message);
-                document.location.reload(true);
-            })
+        if(props.userId === props.user_id) {
+            if (result) {
+                setAnchorEl(null);
+                Axios.delete("https://mathflix.herokuapp.com/api/user/deleteComment", {
+                  params: {
+                    ratingId : props.id,
+                    user_id : props.user_id
+                  }
+                }).then((response) => {
+                    alert(response.data.message);
+                    document.location.reload(true);
+                })
+            } else {
+                console.log('User clicked Cancel');
+            }
         } else {
-            console.log('User clicked Cancel');
+            alert("You cant delete this comment");
         }
     }
 
@@ -59,18 +63,23 @@ export default function UserReactions(props){
     const editComment = () => {
         //setUpdateReaction(!updateReaction);
         //console.log(newValue);
-        Axios.put("https://mathflix.herokuapp.com/api/user/updateComment", {
-            newComment : comments,
-            newRating : newValue,
-            commentId: commentId,
-            user_id : props.user_id
-        }).then((response) => {
-            setUpdateReaction(!updateReaction);
-            alert(response.data.message);
+        if(props.userId === props.user_id) {
+            Axios.put("https://mathflix.herokuapp.com/api/user/updateComment", {
+                newComment : comments,
+                newRating : newValue,
+                commentId: commentId,
+                user_id : props.user_id
+            }).then((response) => {
+                setUpdateReaction(!updateReaction);
+                alert(response.data.message);
+                document.location.reload(true);
+            }).catch((error) => {
+                console.log(error);
+            })
+        } else {
+            alert("You cant update this comment");
             document.location.reload(true);
-        }).catch((error) => {
-            console.log(error);
-        })
+        }
     }
 
     return (

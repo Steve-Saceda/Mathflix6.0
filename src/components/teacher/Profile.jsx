@@ -20,7 +20,7 @@ export default function Profile(){
     const [lName, setLName] = useState('');
     const [gen, setGen] = useState('');
 
-    const [userId, setUserId] = useState("");
+    const [userId, setUserId] = useState();
 
 
     const handleFileChange = (event) => {
@@ -28,11 +28,9 @@ export default function Profile(){
     };
 
     useEffect(() => {
-        Axios.get("https://mathflix.herokuapp.com/api/login").then((response) => {
-            if(response.data.loggedIn === true){
+        Axios.get("https://mathflix.herokuapp.com/api/getUserId").then((response) => {
                 setUserId(response.data.user[0].id);
                 console.log("user id: ", userId);
-            }
           });
     }, [userId])
 

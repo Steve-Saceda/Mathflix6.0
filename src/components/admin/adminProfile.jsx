@@ -20,10 +20,18 @@ export default function Profile(){
     const [lName, setLName] = useState('');
     const [gen, setGen] = useState('');
 
+    const [userId, setUserId] = useState();
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
     };
+
+    useEffect(() => {
+        Axios.get("https://mathflix.herokuapp.com/api/getUserId").then((response) => {
+                setUserId(response.data.user[0].id);
+                console.log("user id: ", userId);
+          });
+    }, [userId])
 
 
     const handleSubmit = async () => {
@@ -32,6 +40,7 @@ export default function Profile(){
         formData.append('fname', fName);
         formData.append('lname', lName);
         formData.append('gender', gen);
+        formData.append('userId', userId);
         try {
           const response = await Axios.post('https://mathflix.herokuapp.com/api/user/uploadProfile', 
           formData, 
@@ -39,6 +48,7 @@ export default function Profile(){
             fname: fName,
             lname: lName,
             gender: gen,
+            userId: userId,
             headers: { 'Content-Type': 'multipart/form-data' }
           });
           if(response) {
@@ -57,10 +67,12 @@ export default function Profile(){
     const handleEdit = async () => {
         const formData = new FormData();
         formData.append('image', file);
+        formData.append('userId', userId);
         try {
           const response = await Axios.put('https://mathflix.herokuapp.com/api/user/editProfile', 
           formData, 
           {
+            userId : userId,
             headers: { 'Content-Type': 'multipart/form-data' }
           });
           if(response.data.message){
@@ -73,7 +85,11 @@ export default function Profile(){
     };
 
     useEffect(() => {
-        Axios.get("https://mathflix.herokuapp.com/api/user/profile").then((response) => {
+        Axios.get("https://mathflix.herokuapp.com/api/user/profile", {
+            params: {
+                userId : userId
+            }
+        }).then((response) => {
             //console.log(response);
             if(!response.data.message) {
                 //console.log(profile);
@@ -83,7 +99,7 @@ export default function Profile(){
         }).catch((error) => {
             console.log(error);
         });
-    },[profile])
+    },[userId])
 
 
     Axios.defaults.withCredentials = true;

@@ -40,9 +40,11 @@ export default function TakeQuiz(){
       Axios.get("https://mathflix.herokuapp.com/api/user/finishQuiz", {
         params: {
           chapterId: chapterIdRef.current,
+          userId : location.state.userId
         }        
       })
       .then((response) => {
+        console.log("user finish quiz", response);
         if(!response.data.message){
           setUserTakeQuiz(true);
           userFinishQuiz();
@@ -53,7 +55,7 @@ export default function TakeQuiz(){
     }
 
     getQuiz();
-  }, [])
+  }, [location.state.userId])
 
   const userFinishQuiz = () => {
     Axios.get("https://mathflix.herokuapp.com/api/user/fetchQuiz",{
@@ -72,6 +74,7 @@ export default function TakeQuiz(){
   const userStartQuiz = () => {
     Axios.post("https://mathflix.herokuapp.com/api/user/takeQuiz", {
         chapterId: location.state.chapterId,
+        userId: location.state.userId
       }).then((response) => {
         setStart(!start)
         setHideStart(!hideStart);

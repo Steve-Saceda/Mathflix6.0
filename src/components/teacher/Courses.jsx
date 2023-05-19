@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import {useState,useEffect} from "react";
 import { useLocation } from "react-router-dom";
 import Axios from "axios";
 import "../../css/teacher/modal.css";
@@ -7,10 +7,10 @@ import Course from "./Course";
 import Button from '@mui/material/Button';
 import EnrollStudentModal from "./EnrollStudentModal";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 
 
-export default function Courses() {
+export default function Courses(){
 
     const navigate = useNavigate();
 
@@ -34,20 +34,11 @@ export default function Courses() {
 
 
     //const [searchResult, setSearchResult] = useState();
-    const [userId, setUserId] = useState("");
-
-    useEffect(() => {
-        Axios.get("https://mathflix.herokuapp.com/api/getUserId").then((response) => {
-            setUserId(response.data.user[0].id);
-            console.log("user id: ", userId);
-        });
-    }, [userId])
-
 
     Axios.defaults.withCredentials = true;
 
     const toggleModal = () => {
-        if (nextModal === true) {
+        if (nextModal === true){
             toggleNextModal();
         }
         setModal(!modal);
@@ -61,89 +52,103 @@ export default function Courses() {
         setModal(false);
         setNextModal(false);
     }
+
     const createLesson = () => {
         Axios.post("https://mathflix.herokuapp.com/api/user/createLesson", {
-            lesson: lesson,
-            glevel: glevel,
+          lesson: lesson,
+          glevel: glevel,
+          userId: location.state.userId
         }).then((response) => {
             alert(response.data.message);
             setLessonId(response.data.lessonId);
             setFetchLesson(prevState => {
                 if (Array.isArray(prevState)) {
-                    return [...prevState, response.data];
+                  return [...prevState, response.data];
                 } else {
-                    return [response.data];
+                  return [response.data];
                 }
-            });
+              });
         }).catch((error) => {
             console.log(error);
         });
     };
-
-
+    
+    
 
     useEffect(() => {
         const getResult = () => {
-            Axios.get("https://mathflix.herokuapp.com/api/user/fetchLesson").then((response) => {
-                setFetchLesson(response.data.result);
-                //console.log(fetchLesson);
+            Axios.get("https://mathflix.herokuapp.com/api/user/fetchLesson", {
+                params: {
+                    userId : location.state.userId
+                }
+            }).then((response) => {
+                    setFetchLesson(response.data.result);
+                    //console.log(fetchLesson);
             });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
         getResult();
-    }, []);
+    }, [location.state.userId]);
 
     useEffect(() => {
         const getStudentEnrolled = () => {
-            Axios.get("https://mathflix.herokuapp.com/api/user/studentEnrolled").then((response) => {
-                setStudentEnrolled(response.data.result);
-                //console.log(fetchLesson);
-            });
+            Axios.get("https://mathflix.herokuapp.com/api/user/studentEnrolled", {
+                params: {
+                    userId : location.state.userId
+                }
+            }).then((response) => {
+                    setStudentEnrolled(response.data.result);
+                    console.log(response)
+                    //console.log(fetchLesson);
+            });           
         }
         getStudentEnrolled();
-    }, [])
+    },[location.state.userId])
 
     //test
     useEffect(() => { //add here
         const checkProfile = () => {
             Axios.get("https://mathflix.herokuapp.com/api/user/profile", {
                 params: {
-                    userId: userId
+                    userId : location.state.userId
                 }
             }).then((response) => {
-                if (response.data.message) {
-                    navigate("/user/profile");
+                console.log("result", response);
+                if(response.data.result) {
+                    // navigate("/user/profile")
+                } else {
+                    navigate("/user/profile")
                 }
-            });
+            });           
         }
         checkProfile();
-    }, [navigate])
+    },[navigate, location.state.userId])
 
 
     const fetchData = (data) => {
         return (
-            <Course
-                key={data.id}
-                id={data.id}
-                lessonName={data.lesson_name}
-                gradeLevel={data.grade_level}
-                kindofuser={location.state.kindofuser}
-                nextModal={nextModal}
-                setNextModal={setNextModal}
-                toggleModal={toggleModal}
-                setLessonId={setLessonId}
+            <Course 
+                key = {data.id}
+                id = {data.id}
+                lessonName = {data.lesson_name}
+                gradeLevel = {data.grade_level}
+                kindofuser = {location.state.kindofuser}
+                nextModal = {nextModal}
+                setNextModal = {setNextModal}
+                toggleModal = {toggleModal}
+                setLessonId = {setLessonId}
             />
         );
     }
 
     const fetchStudentEnrolled = (data) => {
         return (
-            <Course
-                key={data.id}
-                id={data.lesson_id}
-                lessonName={data.lesson_name}
-                gradeLevel={data.grade_level}
-                kindofuser={location.state.kindofuser}
+            <Course 
+                key = {data.id}
+                id = {data.lesson_id}
+                lessonName = {data.lesson_name}
+                gradeLevel = {data.grade_level}
+                kindofuser = {location.state.kindofuser}
             />
         );
     }
@@ -152,54 +157,54 @@ export default function Courses() {
         <div className="teacher-containter">
             <UserNavbar />
             {location.state.kindofuser}
-            <div className="add-course" style={location.state.kindofuser === 'student' ? { display: 'none' } : null}>
+            <div className="add-course" style={location.state.kindofuser === 'student' ? {display: 'none'} : null}>
                 <Button variant="contained" onClick={toggleModal}>Create Lesson</Button>
             </div>
             {modal && (
-                <div className="modal">
-                    <div onClick={() => {
-                        toggleModal();
-                        document.location.reload(true);
-                    }} className="overlay"></div>
-                    <div className="modal-content" >
-                        <div className="modal-wrap" style={nextModal === true ? { display: 'none' } : null}>
-                            <h2>Create a Lesson</h2>
-                            <form className="modal-form">
-                                <label>Lesson Name:</label>
-                                <input
-                                    type="text"
-                                    onChange={(e) => {
-                                        setLesson(e.target.value);
-                                    }}
-                                />
-                                <label>Grade Level:</label>
-                                <input
-                                    type="text"
-                                    onChange={(e) => {
-                                        setGlevel(e.target.value);
-                                    }}
-                                />
-                            </form>
-
-                            <button className="close-modal" onClick={(toggleModal)}>
-                                CLOSE
-                            </button>
-
-                            <div className="modal-next">
-                                <Button variant="contained" onClick={() => {
-                                    createLesson();
-                                    toggleNextModal();
-                                }}>Next</Button>
-                            </div>
-                        </div>
-                        {nextModal && (
-                            <EnrollStudentModal
-                                skip={skip}
-                                lessonId={lessonId}
+            <div className="modal">
+                <div onClick={() => {
+                    toggleModal();
+                    document.location.reload(true);
+                }} className="overlay"></div>
+                <div className="modal-content" >
+                    <div className="modal-wrap" style={nextModal === true ? {display: 'none'} : null}>
+                        <h2>Create a Lesson</h2>
+                        <form className="modal-form">
+                            <label>Lesson Name:</label>
+                            <input 
+                                type="text" 
+                                onChange={(e) => {
+                                    setLesson(e.target.value);
+                                }}
                             />
-                        )}
+                            <label>Grade Level:</label>
+                            <input 
+                                type="text"
+                                onChange={(e) => {
+                                    setGlevel(e.target.value);
+                                }}
+                            />
+                        </form>
+
+                        <button className="close-modal" onClick={(toggleModal)}>
+                            CLOSE
+                        </button>
+                    
+                        <div className="modal-next">
+                            <Button variant="contained" onClick={() => {
+                                createLesson();
+                                toggleNextModal();
+                            }}>Next</Button>
+                        </div>
                     </div>
+                    {nextModal && (
+                        <EnrollStudentModal
+                            skip = {skip}
+                            lessonId = {lessonId}
+                        />
+                    )}
                 </div>
+            </div>
             )}
             <div className="course-wrap">
                 {fetchLesson?.map(fetchData)}
