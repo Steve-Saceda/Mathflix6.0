@@ -13,8 +13,8 @@ export default function Gameslist() {
                 <div className="gamebox-container">
                     <div className="gamebox">
                         Game 1
-                        <div>
-                            Game Pic
+                        <div className="gamebox2">
+                        <img src="/images/2048.png" alt="2048" />
                         </div>
                         <div>
                         <Button variant="contained" onClick={() => {navigate('/games/game1')}}>
@@ -25,8 +25,8 @@ export default function Gameslist() {
                     </div>
                     <div className="gamebox">
                         Game 2
-                        <div>
-                            Game Pic
+                        <div className="gamebox2">
+                            <img src="/images/Tenzies.png" alt="Tenzies" />
                         </div>
                         <div>
                         <Button variant="contained" onClick={() => {navigate('/games/game2')}}>
