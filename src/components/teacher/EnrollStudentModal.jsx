@@ -54,7 +54,7 @@ export default function EnrollStudentModal(props){
     return (
         <>
             <div className="add-student-modal">
-                {props.lessonId}
+                
                 <h2>Add a student</h2>
                 <div className="search-student-wrap-modal">
                     <input 
