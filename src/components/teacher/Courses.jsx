@@ -156,7 +156,7 @@ export default function Courses(){
     return (
         <div className="teacher-containter">
             <UserNavbar />
-            {location.state.kindofuser}
+            
             <div className="add-course" style={location.state.kindofuser === 'student' ? {display: 'none'} : null}>
                 <Button variant="contained" onClick={toggleModal}>Create Lesson</Button>
             </div>

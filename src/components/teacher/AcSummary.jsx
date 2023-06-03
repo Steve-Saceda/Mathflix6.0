@@ -65,7 +65,7 @@ export default function AcSummary(props={}){
     return (
       <>
         <div className='stdntContainer' key={props.id}>
-          {props.lessonId}
+          
           <Accordion sx={{backgroundColor: "grey", color: "white"}}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
